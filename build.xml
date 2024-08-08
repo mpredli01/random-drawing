@@ -1,0 +1,112 @@
+<?xml version="1.0" ?>
+<project name="Garden State Java User Group IntelliJ IDEA Drawing" default="build" basedir=".">
+	<description>
+		Random Drawing Application Ant Build
+	</description>
+	<!-- set global properties for this build -->
+	<property file="build.properties"/>
+	<echo message="${border}"/>
+	<echo message="${title}"/>
+	<echo message="${border}"/>
+	<target name="build" depends="init,clean,compile,dist" description="build application">
+		<echo message="Build complete!"/>
+	</target>
+	<target name="init" description="initialize build">
+		<echo message="+--------------------+"/>
+		<echo message="| Initializing Build |"/>
+		<echo message="+--------------------+"/>
+		<!-- create the time stamp and build number -->
+		<tstamp/>
+		<buildnumber/>
+		<!-- create the classes directory structure used by compile -->
+		<mkdir dir="${src.dir}"/>
+		<mkdir dir="${classes.dir}"/>
+		<mkdir dir="${dist.lib.dir}"/>
+		<mkdir dir="${dist.zip.dir}"/>
+	</target>
+	<target name="clean" depends="init" description="clean up directories">
+		<echo message="+-------------+"/>
+		<echo message="| Cleaning Up |"/>
+		<echo message="+-------------+"/>
+		<!-- delete the ${classes.dir} and ${dist.dir} directory trees -->
+		<delete includeEmptyDirs="true">
+			<fileset dir="${classes.dir}">
+				<!-- remove subdirectories and their files, but not the specified fileset dir -->
+				<include name="**/*"/>
+			</fileset>
+		</delete>
+		<delete includeEmptyDirs="true">
+			<fileset dir="${dist.zip.dir}">
+				<include name="**/*.zip"/>
+			</fileset>
+		</delete>
+		<delete includeEmptyDirs="true">
+			<fileset dir="${dist.lib.dir}">
+				<include name="**/*.jar"/>
+			</fileset>
+		</delete>
+	</target>
+	<target name="compile" depends="init,clean" description="compile the source">
+		<echo message="+------------------+"/>
+		<echo message="| Compiling Source |"/>
+		<echo message="+------------------+"/>
+		<path id="classpath.base">
+			<pathelement location="${classes.dir}"/>
+		</path>
+		<!-- compile the java code from ${src.dir} into ${classes.dir} -->
+		<echo message="-- ${TODAY} Build No. ${build.number} --"/>
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath.base"/>
+	</target>
+	<!-- <target name="dist" depends="init,clean,moveOriginalSAR,unzipSAR,compile,packageJAR,packageSAR" description="generate the distribution"> -->
+	<target name="dist" depends="init,clean,compile" description="generate the distribution">
+		<echo message="+----------------------------+"/>
+		<echo message="| Building JAR and ZIP Files |"/>
+		<echo message="+----------------------------+"/>
+		<property name="dist.jar.file" value="${dist.lib.dir}\${dist.file}.jar"/>
+		<property name="dist.zip.file" value="${dist.zip.dir}\${dist.file}.zip"/>
+		<!-- generate jar file -->
+		<jar destfile="${dist.jar.file}">
+			<fileset dir="${classes.dir}">
+				<include name="**/*.class"/>
+				<include name="**/*.mf"/>
+				<include name="**/*.xml"/>
+			</fileset>
+		</jar>
+		<!-- generate zip file -->
+		<zip destfile="${dist.zip.file}">
+			<zipfileset dir="${src.dir}" prefix="${package}\src"/>
+			<zipfileset dir="${dist.dir}" prefix="${package}\dist"/>
+			<zipfileset dir="${classes.dir}" prefix="${package}\classes"/>
+			<zipfileset dir="." includes="*.*" prefix="${package}"/>
+		</zip>
+	</target>
+	<target name="run" depends="build" description="run the application">
+		<echo message="+---------------------+"/>
+		<echo message="| Running Application |"/>
+		<echo message="+---------------------+"/>
+		<path id="classpath.run">
+			<pathelement location="${classes.dir}"/>
+		</path>
+		<!-- run application -->
+		<java classname="${package}.${class.app}" classpathref="classpath.run" fork="true">
+			<arg value="${m.value}"/>
+		</java>
+	</target>
+	<target name="pmd" description="analyze the source through PMD utility">
+		<echo message="+--------------------------------------+"/>
+		<echo message="| Analyzing Source Through PMD Utility |"/>
+		<echo message="+--------------------------------------+"/>
+		<path id="classpath.base">
+			<pathelement location="${pmd.home}"/>
+			<fileset dir="${pmd.home}\lib" includes="**/*.jar"/>
+		</path>
+		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="classpath.base"/>
+		<pmd>
+			<ruleset>rulesets/java/quickstart.xml, rulesets/basic.xml, rulesets/imports.xml, rulesets/unusedcode.xml, rulesets/empty.xml</ruleset>
+			<formatter type="html" toFile="${src.dir}\pmd-report.html"/>
+			<fileset dir="${src.dir}">
+				<include name="**/*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+</project>

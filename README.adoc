@@ -1,0 +1,9 @@
+= Garden State Java User Group IntelliJ IDEA Drawing
+
+== Introduction
+
+This is the random drawing application used to select a winner for a one-year license to IntelliJ IDEA at the monthly Garden State Java User Group meetings.
+
+== Build the Application
+
+The application may be built with Maven, Gradle or Ant

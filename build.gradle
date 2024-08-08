@@ -1,0 +1,79 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'application'
+    // id("com.gradle.develocity") version "3.17.5"
+    }
+
+apply plugin: "java"
+apply plugin: "idea"
+apply plugin: "application"
+description = "Garden State Java User Group IntelliJ IDEA Drawing"
+
+ext.javaMainClass = "org.redlich.random.RandomDrawing"
+
+if (project.hasProperty("args")) {
+    ext.cmdargs = project.getProperty("args")
+    }
+else {
+    ext.cmdargs = ""
+    }
+
+task cmdLineJavaExec(type: JavaExec) {
+    group = "Execution"
+    description = "Run the main class with JavaExecTask"
+    classpath = sourceSets.main.runtimeClasspath
+    main = javaMainClass
+    args cmdargs.split()
+}
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+    }
+
+dependencies {
+    testImplementation('junit:junit:4.13.2')
+    }
+
+
+// buildScan {
+    // licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    // licenseAgree = 'yes'
+    // }
+
+application {
+    mainClass.set('org.redlich.random.RandomDrawing')
+    }
+
+/*
+tasks.register runApp(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    mainClass = 'org.redlich.random.RandomDrawing'
+
+    // arguments to pass to the application
+    // args 'appArg1'
+    args '200'
+    }
+*/
+
+/*
+run {
+    if(project.hasProperty("appArgs")) {
+        args Eval.me(appArgs)
+        }
+    }
+ */
+
+mainClassName = 'org.redlich.random.RandomDrawing'
+
+/*
+jar {
+    distributionBaseName = 'random'
+    distributionVersion =  '1.0.0'
+    }
+ */
+
+sourceCompatibility = 21
+targetCompatibility = 21

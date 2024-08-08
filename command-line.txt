@@ -1,0 +1,4 @@
+mvn exec:java -Dexec.mainClass=org.redlich.random.RandomDrawing -Dexec.args=1
+mvn exec:java -Dexec.mainClass=org.redlich.random.RandomDrawing -Dexec.args=5
+
+gradle cmdLineJavaExec -Pargs=1
