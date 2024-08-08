@@ -4,6 +4,22 @@
 
 This is the random drawing application used to select a winner for a one-year license to IntelliJ IDEA at the monthly Garden State Java User Group meetings.
 
-== Build the Application
+== Populate the `attendees.txt` file
+
+The `attendees.txt` file contains a list of characters from movies and TV shows.  You will obviously need to edit this file with the attendees from a specific meeting.
+
+== Build and Execute the Application
 
 The application may be built with Maven, Gradle or Ant
+
+=== Maven
+
+`mvn clean compile exec:java`
+
+=== Gradle
+
+`gradle cmdLineJavaExec -Pargs=1`
+
+=== Ant
+
+`$ ant run`
